@@ -1,7 +1,6 @@
+#custom
 *.db
-
 .vscode/
-
 *.pth
 
 # Byte-compiled / optimized / DLL files
