@@ -1,3 +1,4 @@
 Dockerfile
 venv
-test.db
+*.db
+*.pth

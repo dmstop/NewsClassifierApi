@@ -1,5 +1,8 @@
 import torch
 from transformers import RobertaTokenizer
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Predictor:
     def __init__(self):
@@ -10,6 +13,7 @@ class Predictor:
         self.model.eval()
         self.classes = ['Fake', 'Real']
         self.max_length = 512
+        logger.info("Model successfully loaded")
 
     def predict(self, text: str):
         inputs = self.tokenizer(text, padding='max_length', truncation=True, max_length=self.max_length, return_tensors="pt")
