@@ -2,22 +2,48 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Классификатор новостей</title>
+    <title>News Classifier</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <style>
+        .btn-load {
+            display: inline-block;
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+            cursor: not-allowed;
+            pointer-events: all !important;
+        }
+
+        .btn-load .spinner-border {
+            width: 1rem;
+            height: 1rem;
+            margin-right: .5rem;
+        }
+
+        .btn-load[disabled] {
+            cursor: not-allowed;
+            opacity: 0.65;
+        }
+
+        .result-container p {
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
 
 <div class="container">
-    <h2 class="mt-5">Проверка новости на подлинность</h2>
+    <h2 class="mt-5">Check if news are Real or Fake</h2>
     <div class="form-group">
-        <label for="newsTextInput">Введите текст новости</label>
+        <label for="newsTextInput">Enter news text</label>
         <textarea class="form-control" id="newsTextInput" rows="5"></textarea>
     </div>
-    <button id="checkNewsBtn" class="btn btn-primary">Проверить</button>
+    <button id="checkNewsBtn" class="btn btn-primary">Check</button>
 
     <div id="resultContainer" class="mt-4" style="display: none;">
-        <h4>Результат:</h4>
+        <h4>Result:</h4>
         <p id="labelResult">Label: </p>
         <p id="probabilityResult">Probability: </p>
         <p id="elapsedTimeResult">Elapsed Time: </p>
@@ -28,6 +54,9 @@
     $(document).ready(function(){
         $("#checkNewsBtn").click(function(){
             var newsText = $("#newsTextInput").val();
+            $(this).prop('disabled', true).addClass('btn-load');
+            $(this).html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Checking...`);
+
             $.ajax({
                 url: "http://localhost:2040/NewsClassifier",
                 type: "POST",
@@ -41,6 +70,10 @@
                 },
                 error: function(xhr, status, error) {
                     console.error("Error: " + status + " " + error);
+                },
+                complete: function() {
+                    $("#checkNewsBtn").prop('disabled', false).removeClass('btn-load');
+                    $("#checkNewsBtn").html(`Check`);
                 }
             });
         });
