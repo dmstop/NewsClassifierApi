@@ -2,6 +2,7 @@ from logging_config import setup_logging
 setup_logging()
 
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import asyncio
 from predictor import news_classifier
@@ -31,6 +32,19 @@ async def app_lifespan(app: FastAPI):
         logger.info("Application shutdown")
 
 app = FastAPI(lifespan=app_lifespan)
+
+origins = [
+    "http://localhost:2050"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins, 
+    allow_credentials=True, 
+    allow_methods=["*"],  
+    allow_headers=["*"],  
+)
+
 
 class NewsText(BaseModel):
     text: str = Field(..., min_length=1, max_length=5000, description="The text of the news")
